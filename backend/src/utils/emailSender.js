@@ -181,9 +181,81 @@ async function sendRegisterVerificationLinkEmail({ to, fullName, verifyUrl }) {
   }
 }
 
+async function sendPropertyEnquiryEmail({
+  to,
+  ownerName,
+  propertyTitle,
+  propertyLocation,
+  buyerType,
+  buyReason,
+  buyerName,
+  buyerPhone,
+  message,
+}) {
+  if (!isSmtpConfigured()) {
+    return { ok: false, reason: "SMTP is not configured" };
+  }
+
+  try {
+    const transporter = nodemailer.createTransport(getTransportConfig());
+    const projectName = "99acres";
+    const supportEmail = normalizeEnvValue(process.env.SMTP_FROM) || "feedback@99acres.com";
+    const safeOwnerName = normalizeEnvValue(ownerName) || "Owner";
+    const safePropertyTitle = normalizeEnvValue(propertyTitle) || "Property enquiry";
+    const safePropertyLocation = normalizeEnvValue(propertyLocation) || "Location not available";
+    const safeBuyerName = normalizeEnvValue(buyerName) || "Buyer";
+    const safeBuyerPhone = normalizeEnvValue(buyerPhone) || "Not provided";
+    const safeMessage = normalizeEnvValue(message) || "No message provided";
+
+    await transporter.sendMail({
+      from: normalizeEnvValue(process.env.SMTP_FROM),
+      to,
+      subject: `New enquiry for ${safePropertyTitle}`,
+      text:
+        `Dear ${safeOwnerName},\n\n` +
+        `You have received a new enquiry for your property listing.\n\n` +
+        `Property: ${safePropertyTitle}\n` +
+        `Location: ${safePropertyLocation}\n` +
+        `Buyer Type: ${buyerType}\n` +
+        `Buy Reason: ${buyReason}\n` +
+        `Name: ${safeBuyerName}\n` +
+        `Phone: ${safeBuyerPhone}\n` +
+        `Message: ${safeMessage}\n\n` +
+        `Thanks and Regards,\n${projectName}.com Team\n${supportEmail}`,
+      html:
+        `<div style="font-family:Arial,Helvetica,sans-serif;color:#1f2937;line-height:1.5;">` +
+        `<p style="margin:0 0 12px;">Dear ${safeOwnerName},</p>` +
+        `<p style="margin:0 0 14px;">You have received a new enquiry for your property listing.</p>` +
+        `<div style="border:1px solid #d7dde6;background:#fafafa;border-radius:6px;padding:16px;">` +
+        `<p style="margin:0 0 8px;"><b>Property:</b> ${safePropertyTitle}</p>` +
+        `<p style="margin:0 0 8px;"><b>Location:</b> ${safePropertyLocation}</p>` +
+        `<p style="margin:0 0 8px;"><b>Buyer Type:</b> ${buyerType}</p>` +
+        `<p style="margin:0 0 8px;"><b>Buy Reason:</b> ${buyReason}</p>` +
+        `<p style="margin:0 0 8px;"><b>Name:</b> ${safeBuyerName}</p>` +
+        `<p style="margin:0 0 8px;"><b>Phone:</b> ${safeBuyerPhone}</p>` +
+        `<p style="margin:0;"><b>Message:</b> ${safeMessage}</p>` +
+        `</div>` +
+        `<p style="margin:14px 0 0;color:#4e5f75;">Thanks and Regards<br/>${projectName}.com Team</p>` +
+        `</div>`,
+    });
+
+    return { ok: true };
+  } catch (error) {
+    if (String(error && error.message).includes("BadCredentials")) {
+      return {
+        ok: false,
+        reason: "SMTP auth failed. Use Gmail App Password (16 chars) in SMTP_PASS and keep SMTP_USER/SMTP_FROM same.",
+      };
+    }
+
+    return { ok: false, reason: error.message };
+  }
+}
+
 module.exports = {
   sendOtpEmail,
   sendForgotPasswordEmail,
   sendRegisterVerificationLinkEmail,
+  sendPropertyEnquiryEmail,
   isSmtpConfigured,
 };

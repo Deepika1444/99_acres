@@ -5,7 +5,9 @@
   "main": "src/server.js",
   "scripts": {
     "dev": "nodemon src/server.js",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "seed:locations": "node src/scripts/seedLocationMaster.js",
+    "seed:locations:force": "node src/scripts/seedLocationMaster.js --force"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -15,7 +17,8 @@
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.6.2",
-    "nodemailer": "^8.0.1"
+    "nodemailer": "^8.0.1",
+    "razorpay": "^2.9.6"
   },
   "devDependencies": {
     "nodemon": "^3.1.4"

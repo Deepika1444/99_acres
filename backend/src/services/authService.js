@@ -35,6 +35,14 @@ function createOtp() {
   return String(Math.floor(1000 + Math.random() * 9000));
 }
 
+function createAuthToken(user) {
+  return jwt.sign(
+    { sub: String(user._id), email: user.email },
+    process.env.JWT_SECRET,
+    { expiresIn: process.env.JWT_EXPIRES_IN || "7d" }
+  );
+}
+
 function normalizeUsername(value) {
   return String(value || "").trim().toLowerCase();
 }
@@ -255,6 +263,7 @@ async function verifyRegisterOtp(payload) {
     status: 200,
     body: {
       message: "Account created successfully",
+      token: createAuthToken(user),
       user: buildUserResponse(user),
     },
   };
@@ -346,7 +355,11 @@ async function verifyRegisterEmailLink(payload) {
 
   return {
     status: 200,
-    body: { message: "Account created successfully", user: buildUserResponse(user) },
+    body: {
+      message: "Account created successfully",
+      token: createAuthToken(user),
+      user: buildUserResponse(user),
+    },
   };
 }
 
@@ -389,17 +402,11 @@ async function login(payload) {
     return { status: 401, body: { message: "Password is not correct, please try again" } };
   }
 
-  const token = jwt.sign(
-    { sub: String(user._id), email: user.email },
-    process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRES_IN || "7d" }
-  );
-
   return {
     status: 200,
     body: {
       message: "Login successful",
-      token,
+      token: createAuthToken(user),
       user: buildUserResponse(user),
     },
   };

@@ -10,9 +10,9 @@ function sendStandardResponse(res, result) {
   const hasData = Object.keys(rest).length > 0;
 
   return res.status(status).json({
-    success,
     message,
     data: hasData ? rest : null,
+    success,
   });
 }
 
@@ -22,9 +22,9 @@ async function checkEmail(req, res) {
     return sendStandardResponse(res, result);
   } catch (_error) {
     return res.status(500).json({
-      success: false,
       message: "Internal server error",
       data: null,
+      success: false,
     });
   }
 }
@@ -35,9 +35,9 @@ async function requestRegisterOtp(req, res) {
     return sendStandardResponse(res, result);
   } catch (_error) {
     return res.status(500).json({
-      success: false,
       message: "Internal server error",
       data: null,
+      success: false,
     });
   }
 }
@@ -48,9 +48,9 @@ async function verifyRegisterOtp(req, res) {
     return sendStandardResponse(res, result);
   } catch (_error) {
     return res.status(500).json({
-      success: false,
       message: "Internal server error",
       data: null,
+      success: false,
     });
   }
 }
@@ -61,9 +61,9 @@ async function requestRegisterEmailLink(req, res) {
     return sendStandardResponse(res, result);
   } catch (_error) {
     return res.status(500).json({
-      success: false,
       message: "Internal server error",
       data: null,
+      success: false,
     });
   }
 }
@@ -74,9 +74,9 @@ async function verifyRegisterEmailLink(req, res) {
     return sendStandardResponse(res, result);
   } catch (_error) {
     return res.status(500).json({
-      success: false,
       message: "Internal server error",
       data: null,
+      success: false,
     });
   }
 }
@@ -87,9 +87,9 @@ async function login(req, res) {
     return sendStandardResponse(res, result);
   } catch (_error) {
     return res.status(500).json({
-      success: false,
       message: "Internal server error",
       data: null,
+      success: false,
     });
   }
 }
@@ -100,9 +100,9 @@ async function forgotPassword(req, res) {
     return sendStandardResponse(res, result);
   } catch (_error) {
     return res.status(500).json({
-      success: false,
       message: "Internal server error",
       data: null,
+      success: false,
     });
   }
 }
@@ -113,9 +113,9 @@ async function resetPassword(req, res) {
     return sendStandardResponse(res, result);
   } catch (_error) {
     return res.status(500).json({
-      success: false,
       message: "Internal server error",
       data: null,
+      success: false,
     });
   }
 }
